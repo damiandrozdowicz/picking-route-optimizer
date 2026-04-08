@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
-import { optimizePickingRouteService } from "../services/optimize-picking-route.service";
-import { config } from "../config";
+import {
+  optimizePickingRouteService,
+  NoStockError,
+} from "../services/optimize-picking-route.service";
 import {
   OptimizationRequest,
   OptimizationResponse,
@@ -15,33 +17,21 @@ export async function handleOptimize(
 ) {
   try {
     const { products, startingPosition } = req.body;
-
-    const productLocations =
-      await config.provider.getProductsPositions(products);
-
-    // Exclude shelves that are out of stock — picking from a zero-quantity
-    // position would produce an impossible instruction.
-    const inStockLocations = productLocations.map((locs) =>
-      locs.filter((loc) => loc.quantity > 0),
+    const result = await optimizePickingRouteService.optimizePickingRoute(
+      products,
+      startingPosition,
     );
+    return res.json(result);
+  } catch (error) {
+    console.error("Optimization failed:", error);
 
-    const emptyIndex = inStockLocations.findIndex((locs) => locs.length === 0);
-    if (emptyIndex !== -1) {
+    if (error instanceof NoStockError) {
       return sendErrorResponse(
         res,
         HttpStatusCode.UnprocessableEntity,
-        `No warehouse positions found for product "${products[emptyIndex]}".`,
+        error.message,
       );
     }
-
-    const optimizationResult = optimizePickingRouteService.optimizePickingRoute(
-      startingPosition,
-      inStockLocations,
-    );
-
-    return res.json(optimizationResult);
-  } catch (error) {
-    console.error("Optimization failed:", error);
 
     if (axios.isAxiosError(error)) {
       if (error.response?.status === HttpStatusCode.NotFound) {

@@ -3,12 +3,18 @@ import { toPickingStep } from "../../utils/to-picking-step.util";
 import { findClosestLocation } from "./nearest-neighbour.strategy.util";
 
 /**
+ * Maximum products this strategy can handle.
+ * O(n² × m) scales well — no hard ceiling, but accuracy degrades vs exact solvers.
+ */
+export const maxProducts = Infinity;
+
+/**
  * Greedy nearest-neighbor heuristic.
  * At each step picks the closest unvisited product, and for that product picks
  * the shelf nearest to the current position.
  *
  * Both decisions are locally greedy: neither visit order nor shelf selection is
- * globally optimal. Use bruteForcePStrategy (the default) for exact results.
+ * globally optimal. Swap in dynamicProgrammingStrategy (the default) for exact results.
  *
  * O(n² × m) where n = products, m = positions per product.
  * Swap this in via config.optimizationStrategy for large orders where

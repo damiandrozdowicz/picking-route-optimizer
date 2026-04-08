@@ -16,10 +16,6 @@ const VALID_BODY = {
   startingPosition: { x: 0, y: 0, z: 0 },
 };
 
-/**
- * Fake warehouse positions returned by the mocked provider.
- * Keeps integration tests fast and self-contained — no real HTTP calls needed.
- */
 const MOCK_POSITIONS: WarehousePosition[][] = [
   [
     {
@@ -46,8 +42,6 @@ const MOCK_POSITIONS: WarehousePosition[][] = [
 describe(`POST ${OPTIMIZE_PATH}`, () => {
   beforeEach(() => {
     vi.restoreAllMocks();
-    // Default: provider returns valid fixture data so happy-path tests stay self-contained.
-    // Error-path tests override this with their own mockRejectedValue / mockResolvedValue.
     vi.spyOn(config.provider, "getProductsPositions").mockResolvedValue(
       MOCK_POSITIONS,
     );
@@ -88,8 +82,6 @@ describe(`POST ${OPTIMIZE_PATH}`, () => {
   });
 
   it("returns 422 (Unprocessable Entity) when all positions for a product have quantity 0", async () => {
-    // The provider returns positions, but all are out of stock — after filtering
-    // quantity:0 the product has no valid shelf to pick from.
     const outOfStock: WarehousePosition[][] = [
       [
         {
@@ -123,7 +115,6 @@ describe(`POST ${OPTIMIZE_PATH}`, () => {
   });
 
   it("returns 404 (Not Found) when the warehouse API returns 404", async () => {
-    // Simulate the provider throwing an Axios 404 — product does not exist upstream.
     const axiosError = new AxiosError(
       "Not Found",
       "ERR_BAD_REQUEST",
@@ -143,7 +134,6 @@ describe(`POST ${OPTIMIZE_PATH}`, () => {
   });
 
   it("returns 502 (Bad Gateway) when the warehouse API is unreachable", async () => {
-    // Simulate a network-level Axios failure (e.g. timeout or connection refused).
     const axiosError = new AxiosError(
       "Network Error",
       "ECONNREFUSED",
@@ -163,7 +153,6 @@ describe(`POST ${OPTIMIZE_PATH}`, () => {
   });
 
   it("returns 500 (Internal Server Error) on unexpected non-Axios errors", async () => {
-    // Simulate an unexpected internal failure (e.g. a bug in the optimization algorithm).
     vi.spyOn(config.provider, "getProductsPositions").mockRejectedValue(
       new Error("Unexpected internal error"),
     );

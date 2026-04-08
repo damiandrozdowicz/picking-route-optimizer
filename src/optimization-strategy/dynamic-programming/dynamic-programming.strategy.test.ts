@@ -48,16 +48,19 @@ describe("dynamicProgrammingStrategy", () => {
     ]);
   });
 
-  it("prefers in-stock positions when a closer shelf is empty", () => {
+  it("picks the globally optimal shelf when multiple in-stock options exist", () => {
+    // Two shelves both in stock — strategy must pick the closer one (distance 5)
+    // not the farther one (distance 10). Stock filtering is the service's job;
+    // the strategy only sees pre-filtered, in-stock locations.
     const result = dynamicProgrammingStrategy(origin, [
       [
-        makeLocation("p-1", "empty", 1, 0, 0, 0),
-        makeLocation("p-1", "stocked", 10, 0, 0, 5),
+        makeLocation("p-1", "closer", 0, 5, 0),
+        makeLocation("p-1", "farther", 0, 10, 0),
       ],
     ]);
 
-    expect(result.pickingOrder[0].positionId).toBe("stocked");
-    expect(result.distance).toBe(10);
+    expect(result.pickingOrder[0].positionId).toBe("closer");
+    expect(result.distance).toBe(5);
   });
 
   it("assigns sequential step numbers after reconstruction", () => {

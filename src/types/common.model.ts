@@ -42,3 +42,13 @@ export interface ProblemDetails {
   status: number;
   detail: string;
 }
+
+/**
+ * Contract that every optimization strategy must satisfy.
+ * Receives the picker's starting position and the pre-filtered (in-stock only)
+ * shelf locations grouped by product, and returns the optimal route.
+ */
+export type OptimizationStrategy = (
+  startingPosition: Position,
+  productLocations: WarehousePosition[][],
+) => OptimizationResponse;

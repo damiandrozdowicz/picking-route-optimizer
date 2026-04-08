@@ -19,6 +19,12 @@ interface RouteState {
 }
 
 /**
+ * Maximum products this strategy can safely handle.
+ * Bitmask DP is O(2ⁿ × n × m²) — practical ceiling is 20 products.
+ */
+export const maxProducts = 20;
+
+/**
  * Exact picking optimizer based on bitmask dynamic programming.
  *
  * State:
@@ -36,22 +42,11 @@ export function dynamicProgrammingStrategy(
     return { distance: 0, pickingOrder: [] };
   }
 
-  if (productLocations.length > 30) {
-    throw new Error(
-      "dynamicProgrammingStrategy supports at most 30 products per request.",
-    );
-  }
-
-  const pickableLocations = productLocations.map((locations) => {
-    const inStockLocations = locations.filter((location) => location.quantity > 0);
-    return inStockLocations.length > 0 ? inStockLocations : locations;
-  });
-
-  const candidates = pickableLocations.flatMap((locations, productIndex) =>
+  const candidates = productLocations.flatMap((locations, productIndex) =>
     locations.map((location) => ({ productIndex, location })),
   );
 
-  const candidateIndicesByProduct = pickableLocations.map(() => [] as number[]);
+  const candidateIndicesByProduct = productLocations.map(() => [] as number[]);
   candidates.forEach((candidate, candidateIndex) => {
     candidateIndicesByProduct[candidate.productIndex].push(candidateIndex);
   });
@@ -61,7 +56,7 @@ export function dynamicProgrammingStrategy(
   );
   const transitionDistances = buildTransitionDistances(candidates);
 
-  const totalMasks = 1 << pickableLocations.length;
+  const totalMasks = 1 << productLocations.length;
   const states: Array<Map<number, RouteState>> = Array.from(
     { length: totalMasks },
     () => new Map(),
@@ -81,7 +76,7 @@ export function dynamicProgrammingStrategy(
 
   for (let mask = 1; mask < totalMasks; mask++) {
     for (const [lastCandidateIndex, state] of states[mask]) {
-      for (let nextProductIndex = 0; nextProductIndex < pickableLocations.length; nextProductIndex++) {
+      for (let nextProductIndex = 0; nextProductIndex < productLocations.length; nextProductIndex++) {
         if ((mask & (1 << nextProductIndex)) !== 0) {
           continue;
         }

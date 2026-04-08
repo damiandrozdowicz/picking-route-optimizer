@@ -8,6 +8,12 @@ import { calculateDistance } from "../../utils/calculate-distance.util";
 import { toPickingStep } from "../../utils/to-picking-step.util";
 
 /**
+ * Maximum products this strategy can safely handle.
+ * O(n! × m^n) blows up fast — 8 products is the practical ceiling.
+ */
+export const maxProducts = 8;
+
+/**
  * Computes the globally optimal picking route by evaluating all combinations of:
  *   1. product visit order (Heap's permutation algorithm), and
  *   2. shelf selection per product (Cartesian product of all positions).
@@ -16,7 +22,7 @@ import { toPickingStep } from "../../utils/to-picking-step.util";
  * must be searched exhaustively to guarantee the shortest total distance.
  *
  * Time complexity: O(n! × m^n) where n = number of products, m = positions per product.
- * Keep n small (≤ config.maxProducts) to avoid combinatorial explosion.
+ * Keep n small (≤ maxProducts) to avoid combinatorial explosion.
  */
 export function bruteForcePStrategy(
   startingPosition: Position,
