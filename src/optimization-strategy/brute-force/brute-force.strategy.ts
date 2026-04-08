@@ -89,7 +89,6 @@ function evaluateCandidate(
  * E.g. cartesianProduct([[A,B],[C]]) → [[A,C],[B,C]]
  */
 function* cartesianProduct<T>(optionSets: T[][]): Generator<T[]> {
-  // Compute flat indices: track one index per option-set.
   const lengths = optionSets.map((s) => s.length);
   const total = lengths.reduce((acc, l) => acc * l, 1);
 

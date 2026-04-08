@@ -65,11 +65,8 @@ export const scenarios: Scenario[] = [
       "Greedy shelf-selection can miss the globally shorter route.",
     startingPosition: { x: 0, y: 0, z: 0 },
     productLocations: [
-      // milk: near shelf at (1,0) looks tempting, but (9,0) leads more cheaply to juice
       [shelf("milk", "milk-near", 1, 0, 0), shelf("milk", "milk-far", 9, 0, 0)],
-      // juice: sits at (10,0) — directly next to milk-far
       [shelf("juice", "juice-A", 10, 0, 0), shelf("juice", "juice-B", 0, 8, 0)],
-      // cereal: three options
       [
         shelf("cereal", "cereal-A", 10, 5, 0),
         shelf("cereal", "cereal-B", 2, 5, 0),

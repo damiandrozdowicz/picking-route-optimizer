@@ -16,7 +16,6 @@ app.use(express.json());
 
 registerRoutes(app);
 
-// Must be LAST — catches any unhandled errors from routes above
 app.use(globalErrorHandler);
 
 export { app };

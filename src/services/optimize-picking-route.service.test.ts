@@ -125,7 +125,6 @@ describe("optimizePickingRouteService", () => {
       strategy,
     );
 
-    // Only the in-stock shelf should reach the strategy.
     const passedLocations = strategy.mock.calls[0][1] as WarehousePosition[][];
     expect(passedLocations[0]).toHaveLength(1);
     expect(passedLocations[0][0].positionId).toBe("pos-in");

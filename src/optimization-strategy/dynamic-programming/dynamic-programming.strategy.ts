@@ -62,7 +62,11 @@ export function dynamicProgrammingStrategy(
     () => new Map(),
   );
 
-  for (let productIndex = 0; productIndex < candidateIndicesByProduct.length; productIndex++) {
+  for (
+    let productIndex = 0;
+    productIndex < candidateIndicesByProduct.length;
+    productIndex++
+  ) {
     const startMask = 1 << productIndex;
 
     for (const candidateIndex of candidateIndicesByProduct[productIndex]) {
@@ -76,14 +80,20 @@ export function dynamicProgrammingStrategy(
 
   for (let mask = 1; mask < totalMasks; mask++) {
     for (const [lastCandidateIndex, state] of states[mask]) {
-      for (let nextProductIndex = 0; nextProductIndex < productLocations.length; nextProductIndex++) {
+      for (
+        let nextProductIndex = 0;
+        nextProductIndex < productLocations.length;
+        nextProductIndex++
+      ) {
         if ((mask & (1 << nextProductIndex)) !== 0) {
           continue;
         }
 
         const nextMask = mask | (1 << nextProductIndex);
 
-        for (const nextCandidateIndex of candidateIndicesByProduct[nextProductIndex]) {
+        for (const nextCandidateIndex of candidateIndicesByProduct[
+          nextProductIndex
+        ]) {
           const nextDistance =
             state.distance +
             transitionDistances[lastCandidateIndex][nextCandidateIndex];
@@ -129,9 +139,7 @@ export function dynamicProgrammingStrategy(
   };
 }
 
-function buildTransitionDistances(
-  candidates: CandidatePosition[],
-): number[][] {
+function buildTransitionDistances(candidates: CandidatePosition[]): number[][] {
   const distances = Array.from({ length: candidates.length }, () =>
     new Array<number>(candidates.length).fill(0),
   );

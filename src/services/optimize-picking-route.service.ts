@@ -1,4 +1,9 @@
-import { WarehousePosition, Position, OptimizationResponse, OptimizationStrategy } from "../types";
+import {
+  WarehousePosition,
+  Position,
+  OptimizationResponse,
+  OptimizationStrategy,
+} from "../types";
 import { config } from "../config";
 
 /** Thrown when a product has no in-stock shelf positions after quantity filtering. */

@@ -24,18 +24,9 @@ describe("dynamicProgrammingStrategy", () => {
 
   it("finds the globally optimal route across both order and shelf choice", () => {
     const locations = [
-      [
-        makeLocation("p-A", "A1", 0, 7, 0),
-        makeLocation("p-A", "A2", 3, 9, 0),
-      ],
-      [
-        makeLocation("p-B", "B1", 8, 7, 0),
-        makeLocation("p-B", "B2", 8, 0, 0),
-      ],
-      [
-        makeLocation("p-C", "C1", 2, 4, 0),
-        makeLocation("p-C", "C2", 9, 4, 0),
-      ],
+      [makeLocation("p-A", "A1", 0, 7, 0), makeLocation("p-A", "A2", 3, 9, 0)],
+      [makeLocation("p-B", "B1", 8, 7, 0), makeLocation("p-B", "B2", 8, 0, 0)],
+      [makeLocation("p-C", "C1", 2, 4, 0), makeLocation("p-C", "C2", 9, 4, 0)],
     ];
 
     const result = dynamicProgrammingStrategy(origin, locations);
