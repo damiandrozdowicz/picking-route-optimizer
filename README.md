@@ -167,7 +167,7 @@ The simplest approach: at each step, pick the closest unvisited product and take
 
 #### Step 2 — Brute-force (exact visit order, greedy shelf)
 
-Tries every permutation of product visit order (Heap's algorithm) and returns the shortest. Shelf selection within each permutation is still greedy (nearest-first). This is optimal over _visit order_ but not over _shelf assignment_ — a distinction that matters because the task specification states a product can be stored at multiple locations simultaneously. Runtime is O(n! × m^n), practical only up to ~8 products.
+Tries every permutation of product visit order (Heap's algorithm) and returns the shortest. Shelf selection within each permutation is still greedy (nearest-first). This is optimal over _visit order_ but not over _shelf assignment_ — a distinction that matters because a product can be stored at multiple locations simultaneously. Runtime is O(n! × m^n), practical only up to ~8 products.
 
 #### Step 3 — Dynamic programming / Held-Karp (globally exact)
 
